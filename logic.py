@@ -18,7 +18,9 @@ class Logic(QtCore.QObject):
             caption='Select image file',
             filter=file_filter
         )
-        mainwindow.pixmap = QtGui.QPixmap(response[0])
+        mainwindow.image_path = response[0]
+        mainwindow.pixmap = QtGui.QPixmap(mainwindow.image_path)
+        mainwindow.pixmap = mainwindow.pixmap.scaled(1280, 720, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
         if not mainwindow.pixmap.isNull():
             mainwindow.image_label.setPixmap(mainwindow.pixmap)
         else:

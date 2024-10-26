@@ -16,7 +16,7 @@ class MyWidget(QtWidgets.QWidget):
         self.text = QtWidgets.QLabel('Várakozás az inputra...', alignment=QtCore.Qt.AlignCenter)
 
         self.image_label = QtWidgets.QLabel(self, alignment=QtCore.Qt.AlignCenter)
-        self.image_path = 'test_image.png'
+        self.image_path = ''
         self.pixmap = QtGui.QPixmap(self.image_path)
         if not self.pixmap.isNull():
             self.image_label.setPixmap(self.pixmap)
@@ -34,12 +34,11 @@ class MyWidget(QtWidgets.QWidget):
         self.evaluate_button.clicked.connect(lambda: self.logic.evaluate(self.text))
 
 
-
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
 
     widget = MyWidget()
-    widget.resize(800, 600)
+    widget.resize(1600, 900)
     widget.show()
 
     sys.exit(app.exec())
