@@ -1,5 +1,9 @@
 from PySide6 import QtCore, QtWidgets, QtGui
-import random
+## A képfeldolgozós részhez opencv kell, illetve a numpy és a matplotlib könyvtárak is.
+## pip install opencv-python|matplotlib (a numpy az opencv-vel együtt települ.)
+import cv2 as cv
+import numpy as np
+import matplotlib.pyplot as plt
 
 class Logic(QtCore.QObject):
     def __init__(self):
@@ -26,8 +30,45 @@ class Logic(QtCore.QObject):
             mainwindow.image_label.setText('A kép nem található')
 
     @QtCore.Slot(QtWidgets.QLabel)
-    def evaluate(self,textbox):
+    def evaluate(self,mainwindow):
         """
         Ez a függvény neurális háló segítségével meghatározza, hogy a képen melyik játékos nyert. Egy string-el tér vissza.
         """
-        textbox.setText(random.choice(["A bal oldali játékos nyert", "A jobb oldali játékos nyert", "Döntetlen"]))
+
+        img = cv.imread(mainwindow.image_path)
+
+        if img is None:
+            dlg = QtWidgets.QMessageBox(mainwindow)
+            dlg.setWindowTitle("Hiba")
+            dlg.setText("A kép nem található.")
+            dlg.exec()
+            return
+        
+        
+        # Itt vágjuk kétfelé a közepénél a képet
+        img_firstpart = img[:,:int(img.shape[1]/2),:]
+        img_secondpart = img[:,int(img.shape[1]/2):int(img.shape[1]),:]
+
+        # Átméretezés a neurális háló felismeréshez
+        resized_firstpart = cv.resize(img_firstpart,(426,240)) # Ez 16:9-es felbontás 240p-ben.
+        resized_secondpart = cv.resize(img_secondpart,(426,240)) # Ez is.
+
+        #DEBUG RESZ
+        img_rgb = cv.cvtColor(resized_firstpart, cv.COLOR_BGR2RGB)
+        img_rgb2 = cv.cvtColor(resized_secondpart, cv.COLOR_BGR2RGB)
+        fig, axs = plt.subplots(1, 2, figsize=(10, 5))
+        fig.suptitle('A megjátszott kezek:')
+        axs[0].imshow(img_rgb)
+        axs[0].set_title('Bal oldali játékos')
+        axs[1].imshow(img_rgb2)
+        axs[1].set_title('Jobb oldali játékos')
+        fig.tight_layout()
+        plt.show()
+        #DEBUG RESZ VEGE
+        
+        #TODO a resized_firstpart és resized_secondpart képeket kell beadni a neurális hálónak majd.
+
+        #TODO ha ez megtörtént, a függvény utolsó része az, hogy lekódoljuk a 9 esetet a felismerés alapján, és visszatérjünk egy stringgel.
+
+
+        #textbox.setText(random.choice(["A bal oldali játékos nyert", "A jobb oldali játékos nyert", "Döntetlen"]))
