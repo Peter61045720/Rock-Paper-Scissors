@@ -18,8 +18,8 @@ class MyWidget(QtWidgets.QWidget):
         self.layout.addWidget(self.button2)
         self.layout.addWidget(self.text)
 
-        self.button1.clicked.connect(self.import_image)
-        self.button2.clicked.connect(self.evaluate)
+        self.import_button.clicked.connect(self.import_image)
+        self.evaluate_button.clicked.connect(self.evaluate)
 
     @QtCore.Slot()
     def import_image(self):
