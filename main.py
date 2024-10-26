@@ -1,10 +1,12 @@
 import sys
 from PySide6 import QtCore, QtWidgets, QtGui
+from logic import Logic
 
 
 class MyWidget(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
+        self.logic = Logic()
 
         self.title = 'Kő-Papír-Olló'
         self.setWindowTitle(self.title)
@@ -27,6 +29,10 @@ class MyWidget(QtWidgets.QWidget):
         self.layout.addWidget(self.evaluate_button)
         self.layout.addWidget(self.image_label)
         self.layout.addWidget(self.text)
+      
+        self.import_button.clicked.connect(lambda: self.logic.import_image(self.text)) 
+        self.evaluate_button.clicked.connect(lambda: self.logic.evaluate(self.text))
+
 
 
 if __name__ == "__main__":
