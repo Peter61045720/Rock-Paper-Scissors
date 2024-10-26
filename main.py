@@ -30,7 +30,7 @@ class MyWidget(QtWidgets.QWidget):
         self.layout.addWidget(self.image_label)
         self.layout.addWidget(self.text)
       
-        self.import_button.clicked.connect(lambda: self.logic.import_image(self.text)) 
+        self.import_button.clicked.connect(lambda: self.logic.import_image(self))
         self.evaluate_button.clicked.connect(lambda: self.logic.evaluate(self.text))
 
 
