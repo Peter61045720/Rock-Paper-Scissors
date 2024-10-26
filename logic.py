@@ -1,5 +1,4 @@
 from PySide6 import QtCore, QtWidgets, QtGui
-import os
 import random
 
 class Logic(QtCore.QObject):
@@ -8,7 +7,7 @@ class Logic(QtCore.QObject):
     @QtCore.Slot(QtWidgets.QWidget)
     def import_image(self,mainwindow):
         """
-        Ez a függvény feldobat egy QtDialog-ot, amelyen egy képfájlt tud kiválasztani a felhasználó a programnak, amin a "kő-papír-olló" nevű játék
+        Ez a függvény feldobat egy QFileDialog-ot, amelyen egy képfájlt tud kiválasztani a felhasználó a programnak, amin a "kő-papír-olló" nevű játék
         kiértékelését végrehajthatja a program.
         """
         mainwindow.text.setText("Kép sikeresen beimportálvaaaaa")
