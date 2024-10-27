@@ -66,7 +66,7 @@ class Logic(QtCore.QObject):
         plt.show()
         #DEBUG RESZ VEGE
         
-        #TODO a resized_firstpart és resized_secondpart képeket kell beadni a neurális hálónak majd.
+        
 
         #TODO ha ez megtörtént, a függvény utolsó része az, hogy lekódoljuk a 9 esetet a felismerés alapján, és visszatérjünk egy stringgel.
 
