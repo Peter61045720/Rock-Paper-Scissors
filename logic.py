@@ -1,13 +1,18 @@
 from PySide6 import QtCore, QtWidgets, QtGui
 ## A képfeldolgozós részhez opencv kell, illetve a numpy és a matplotlib könyvtárak is.
 ## pip install opencv-python|matplotlib (a numpy az opencv-vel együtt települ.)
+## Tensorflow is szükséges a működéshez.
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
 
+from tensorflow import keras
+
 class Logic(QtCore.QObject):
     def __init__(self):
         super().__init__()
+        self.model = keras.models.load_model("./model/baseline_cnn_model.keras")
+        self.model.summary()
     @QtCore.Slot(QtWidgets.QWidget)
     def import_image(self,mainwindow):
         """
@@ -46,14 +51,12 @@ class Logic(QtCore.QObject):
         
         
         # Itt vágjuk kétfelé a közepénél a képet
-        img_firstpart = img[:,:int(img.shape[1]/2),:]
-        img_secondpart = img[:,int(img.shape[1]/2):int(img.shape[1]),:]
+        img_firsthalf = img[:,:int(img.shape[1]/2),:]
+        img_secondhalf = img[:,int(img.shape[1]/2):int(img.shape[1]),:]
 
-        # Átméretezés a neurális háló felismeréshez
-        resized_firstpart = cv.resize(img_firstpart,(426,240)) # Ez 16:9-es felbontás 240p-ben.
-        resized_secondpart = cv.resize(img_secondpart,(426,240)) # Ez is.
-
-        #DEBUG RESZ
+        # Plotolas 
+        resized_firstpart = cv.resize(img_firsthalf, (320, 240))
+        resized_secondpart = cv.resize(img_secondhalf, (320, 240))
         img_rgb = cv.cvtColor(resized_firstpart, cv.COLOR_BGR2RGB)
         img_rgb2 = cv.cvtColor(resized_secondpart, cv.COLOR_BGR2RGB)
         fig, axs = plt.subplots(1, 2, figsize=(10, 5))
@@ -64,11 +67,25 @@ class Logic(QtCore.QObject):
         axs[1].set_title('Jobb oldali játékos')
         fig.tight_layout()
         plt.show()
-        #DEBUG RESZ VEGE
+
+        # Normalizalas a neuralis halon valo felismeresehez
+        normalized_firsthalf = self.normalize_image(img_firsthalf)
+        normalized_secondhalf = self.normalize_image(img_secondhalf)
+
+        res1 = self.model.predict(normalized_firsthalf)
+        res2 = self.model.predict(normalized_secondhalf)
+        print(res1)
+        print(res2)
         
         
 
         #TODO ha ez megtörtént, a függvény utolsó része az, hogy lekódoljuk a 9 esetet a felismerés alapján, és visszatérjünk egy stringgel.
 
 
-        #textbox.setText(random.choice(["A bal oldali játékos nyert", "A jobb oldali játékos nyert", "Döntetlen"]))
+    def normalize_image(self, image):
+        normalized_image = cv.resize(image, (300, 300))
+        normalized_image = cv.cvtColor(normalized_image, cv.COLOR_BGR2RGB)
+        normalized_image = normalized_image.astype("float32") / 255.0
+        normalized_image = np.expand_dims(normalized_image, axis=0)
+        return normalized_image
+    
