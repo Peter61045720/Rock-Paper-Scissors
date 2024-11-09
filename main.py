@@ -14,8 +14,13 @@ class MyWidget(QtWidgets.QWidget):
         self.import_button = QtWidgets.QPushButton('Kép importálása')
         self.evaluate_button = QtWidgets.QPushButton('Kép kiértékelése')
         self.text = QtWidgets.QLabel('Várakozás az inputra...', alignment=QtCore.Qt.AlignCenter)
-
         self.image_label = QtWidgets.QLabel(self, alignment=QtCore.Qt.AlignCenter)
+
+        self.import_button.setMaximumWidth(200)
+        self.evaluate_button.setMaximumWidth(200)
+        self.import_button.setStyleSheet("background-color: #4CAF50; color: white; font-size: 14px;")
+        self.evaluate_button.setStyleSheet("background-color: #2196F3; color: white; font-size: 14px;")
+
         self.image_path = ''
         self.pixmap = QtGui.QPixmap(self.image_path)
         if not self.pixmap.isNull():
@@ -26,8 +31,8 @@ class MyWidget(QtWidgets.QWidget):
 
         self.layout = QtWidgets.QVBoxLayout(self)
         self.layout.addWidget(self.import_button)
-        self.layout.addWidget(self.evaluate_button)
         self.layout.addWidget(self.image_label)
+        self.layout.addWidget(self.evaluate_button)
         self.layout.addWidget(self.text)
       
         self.import_button.clicked.connect(lambda: self.logic.import_image(self))
