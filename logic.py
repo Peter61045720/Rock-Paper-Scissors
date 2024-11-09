@@ -19,7 +19,7 @@ class Logic(QtCore.QObject):
         Ez a függvény feldobat egy QFileDialog-ot, amelyen egy képfájlt tud kiválasztani a felhasználó a programnak, amin a "kő-papír-olló" nevű játék
         kiértékelését végrehajthatja a program.
         """
-        mainwindow.text.setText("Kép sikeresen beimportálvaaaaa")
+        mainwindow.text.setText("Kép sikeresen beimportálva")
         file_filter='Image Files (*.png *.jpg *.bmp)'
         response=QtWidgets.QFileDialog.getOpenFileName(
             parent=mainwindow,
