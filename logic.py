@@ -54,19 +54,6 @@ class Logic(QtCore.QObject):
         img_firsthalf = img[:,:int(img.shape[1]/2),:]
         img_secondhalf = img[:,int(img.shape[1]/2):int(img.shape[1]),:]
 
-        # Plotolas 
-        resized_firstpart = cv.resize(img_firsthalf, (320, 240))
-        resized_secondpart = cv.resize(img_secondhalf, (320, 240))
-        img_rgb = cv.cvtColor(resized_firstpart, cv.COLOR_BGR2RGB)
-        img_rgb2 = cv.cvtColor(resized_secondpart, cv.COLOR_BGR2RGB)
-        fig, axs = plt.subplots(1, 2, figsize=(10, 5))
-        fig.suptitle('A megjátszott kezek:')
-        axs[0].imshow(img_rgb)
-        axs[0].set_title('Bal oldali játékos')
-        axs[1].imshow(img_rgb2)
-        axs[1].set_title('Jobb oldali játékos')
-        fig.tight_layout()
-        plt.show()
 
         # Normalizalas a neuralis halon valo felismeresehez
         normalized_firsthalf = self.normalize_image(img_firsthalf)
@@ -77,7 +64,22 @@ class Logic(QtCore.QObject):
         print(res1)
         print(res2)
         
-        
+        # Plotolas 
+        resized_firstpart = cv.resize(img_firsthalf, (320, 240))
+        resized_secondpart = cv.resize(img_secondhalf, (320, 240))
+        img_rgb = cv.cvtColor(resized_firstpart, cv.COLOR_BGR2RGB)
+        img_rgb2 = cv.cvtColor(resized_secondpart, cv.COLOR_BGR2RGB)
+        fig, axs = plt.subplots(1, 2, figsize=(10, 5))
+        kez1_string = self.kez_meghatarozas(res1)
+        kez2_string = self.kez_meghatarozas(res2)
+        axs[0].imshow(img_rgb)
+        axs[0].set_title('Bal oldali játékos: ' + kez1_string)
+        axs[1].imshow(img_rgb2)
+        axs[1].set_title('Jobb oldali játékos: ' + kez2_string)
+        eredmeny_string = self.eredmeny_meghatarozas(kez1_string,kez2_string)
+        fig.suptitle('A felismert kezek alapján '+ eredmeny_string)
+        fig.tight_layout()
+        plt.show()
 
         #TODO ha ez megtörtént, a függvény utolsó része az, hogy lekódoljuk a 9 esetet a felismerés alapján, és visszatérjünk egy stringgel.
 
@@ -89,3 +91,24 @@ class Logic(QtCore.QObject):
         normalized_image = np.expand_dims(normalized_image, axis=0)
         return normalized_image
     
+
+    def kez_meghatarozas(self,nparray):
+        index = np.argmax(nparray[0])
+        if index == 0:
+            return 'Kő'
+        elif index == 1:
+            return 'Papír'
+        elif index == 2:
+            return 'Olló'
+        else:
+            return 'Hiba'
+    
+    def eredmeny_meghatarozas(self,kez1,kez2):
+        if kez1 == 'Hiba' or kez2 == 'Hiba':
+            return 'HIBA!'
+        if kez1 == kez2:
+            return 'a meccs döntetlen lett.'
+        if (kez1 == 'Kő' and kez2 == 'Papír') or (kez1 == 'Papír' and kez2 == 'Olló') or (kez1 == 'Olló' and kez2 == 'Kő'):
+            return 'a jobb oldali játékos nyert.'
+        else:
+            return 'a bal oldali játékos nyert.'
