@@ -11,7 +11,7 @@ from tensorflow import keras
 class Logic(QtCore.QObject):
     def __init__(self):
         super().__init__()
-        self.model = keras.models.load_model("./model/baseline_cnn_model.keras")
+        self.model = keras.models.load_model("./model/cnn_model.keras")
         self.model.summary()
     @QtCore.Slot(QtWidgets.QWidget)
     def import_image(self,mainwindow):
@@ -85,7 +85,7 @@ class Logic(QtCore.QObject):
 
 
     def normalize_image(self, image):
-        normalized_image = cv.resize(image, (300, 300))
+        normalized_image = cv.resize(image, (150, 150))
         normalized_image = cv.cvtColor(normalized_image, cv.COLOR_BGR2RGB)
         normalized_image = normalized_image.astype("float32") / 255.0
         normalized_image = np.expand_dims(normalized_image, axis=0)
